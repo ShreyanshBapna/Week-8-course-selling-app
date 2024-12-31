@@ -5,6 +5,8 @@
 // way - 2 
 const {Router} = require('express');
 
+const {userModel} = require("../db");
+
 const userRouter = Router();
 
 // signup
