@@ -4,6 +4,8 @@ const courseRouter = Router();
 
 const {courseModel} = require('../db')
 
+
+
 // purcahsing the course 
 courseRouter.post('/purchase', (req, res) => {
     

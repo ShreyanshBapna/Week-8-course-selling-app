@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-mongoose.connect('mongodb+srv://shreyansh:shru%4082230@cluster0.iv297.mongodb.net/course-selling-app')
-
 const ObjectId = mongoose.Types.ObjectId;
 
 const userSchema = new Schema({
