@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/user', userRouter)
 app.use('/admin', adminRouter)
 app.use('/course', courseRouter)  
-console.log(process.env.MONGO_URL);
+
 async function main (){
     await mongoose.connect(process.env.MONGO_URL);
     app.listen(3000);

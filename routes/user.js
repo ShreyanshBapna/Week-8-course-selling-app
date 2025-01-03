@@ -6,10 +6,11 @@
 const {Router} = require('express');
 const { inputValidation } = require('../middleware/inputvalidation')
 const jwt = require('jsonwebtoken');
-const {userModel} = require("../db");
+const {userModel, purchaseModel} = require("../db");
 const bcrypt = require('bcrypt');
 const userRouter = Router();
 const {JWT_USER_PASSWORD} = require('../config');
+const {userMiddleware} = require('../middleware/user')
 
 // signup
 userRouter.post('/signup', inputValidation, async (req, res) => { 
@@ -75,9 +76,14 @@ userRouter.post('/signin', inputValidation, async (req, res) => {
 });
 
 // see the purchases courses
-userRouter.get('/Purchases', (req, res) => {
+userRouter.get('/purchases', userMiddleware, async (req, res) => {
+    const userId = req.userId;
 
+    const purchase = await purchaseModel.find({
+        userId
+    })
     res.json({
+        purchase,
         msg : "all fine"
     })
 });
