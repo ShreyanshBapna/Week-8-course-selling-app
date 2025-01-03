@@ -3,16 +3,16 @@ const { userRouter } = require('./routes/user');
 const { courseRouter } = require('./routes/course');
 const { adminRouter } = require('./routes/admin')
 const mongoose = require("mongoose");
-
+require('dotenv').config()
  
 const app = express();
 app.use(express.json());
 app.use('/user', userRouter)
 app.use('/admin', adminRouter)
 app.use('/course', courseRouter)  
-
+console.log(process.env.MONGO_URL);
 async function main (){
-    await mongoose.connect('mongodb+srv://shreyansh:shru%4082230@cluster0.iv297.mongodb.net/course-selling-app');
+    await mongoose.connect(process.env.MONGO_URL);
     app.listen(3000);
 }
 
