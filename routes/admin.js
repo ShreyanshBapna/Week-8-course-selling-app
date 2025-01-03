@@ -3,36 +3,14 @@ const bcrypt = require('bcrypt');
 const adminRouter = Router();
 const jwt = require('jsonwebtoken');
 const {z} = require('zod');
-const JWT_ADMIN_PASSWORD = 'ilovekiara';
+const {JWT_ADMIN_PASSWORD} = require('../config');
+const {adminMiddleware} = require('../middleware/admin')
+const { inputValidation } = require('../middleware/inputvalidation')
+const {adminModel, courseModel} = require("../db");
 
 
-const {adminModel} = require("../db");
-
-function authForSign(req, res, next){
-    // creating the type of data which i want using zod 
-    const requiredBody = z.object({
-        email : z.string().email(),
-        password : z.string().min(3).max(15),
-        firstname : z.string().min(3),
-        lastname : z.string().min(3).max(10)
-    })
-
-    // check the data which i get from user is correct or not 
-    // (if it will return true then the data which user give us is according to over requirement)
-    const parseDataWithSuccess = requiredBody.safeParse(req.body);
-
-    if (parseDataWithSuccess.success){
-        next();
-    } else {
-        res.json({
-            msg : "Invalid cridentail!!",
-            Error : parseDataWithSuccess.error
-        })
-        return; 
-    }
-}
 // signup
-adminRouter.post('/signup', authForSign, async (req, res) => {
+adminRouter.post('/signup', inputValidation, async (req, res) => {
    
     const {email, password, firstname, lastname} = req.body;
 
@@ -63,7 +41,7 @@ adminRouter.post('/signup', authForSign, async (req, res) => {
 });
 
 // signin 
-adminRouter.post('/signin', async (req, res) => {
+adminRouter.post('/signin',inputValidation ,async (req, res) => {
     const {email, password} = req.body;
     
     // with .find -> this will return all the user having this email in the array
@@ -95,11 +73,30 @@ adminRouter.post('/signin', async (req, res) => {
     
 });
 
-adminRouter.post('/', (req, res) => {
+// create a new crouse 
+adminRouter.post('/', adminMiddleware, async (req, res) => {
+    const adminID = req.adminID;
+
+    const { title, discription, price, imageURL } = req.body;
+
+    const course = await courseModel.create({
+        title, 
+        discription, 
+        price, 
+        imageURL, 
+        createrID : adminID
+    })
     
+    res.json({
+        msg : "Course Created!!",
+        courseID : course._id
+    })
 });
 
 adminRouter.put('/', (req, res) => {
+    const adminID = req.adminID;
+    const courseID = req.headers.courseID;
+
     
 });
 
